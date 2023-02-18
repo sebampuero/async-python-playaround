@@ -1,19 +1,16 @@
 from uuid import UUID
-from sanic import Sanic
 from sanic import text
-
-app = Sanic.get_app()
 
 # Register routes
 
-@app.route("/")
 async def main_index(request):
+    # call Alarm object to get all alarms and render them in template
     return text("Index page with template")
 
-@app.post("/price-alarm")
 async def price_alarm_create(request):
-    pass
+    # extract objects and create with Alarm, do verification
+    return text("Hello")
 
-@app.delete("/price-alarm/<id:uuid>")
-async def price_alarm_create(request, id: UUID):
-    pass
+async def price_alarm_delete(request, id: UUID):
+    # call delete in Alarm to delete the alarm!
+    return text("Deleted!")
