@@ -1,5 +1,5 @@
 # Hello world
-import motor.motor_asyncio, sys, logging, socket
+import motor.motor_asyncio, sys, logging, socket, os
 from logging.handlers import RotatingFileHandler
 from asyncio import BoundedSemaphore
 from sanic import Sanic
@@ -12,12 +12,14 @@ handler = RotatingFileHandler("/home/pi/price_alarm/alarm.log")
 handler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(handler)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 app = Sanic("price_alarm_app")
 app.add_route(main_index, "/")
 app.add_route(price_alarm_create, "/price-alarm", methods=["POST"])
-app.add_route(price_alarm_delete, "/price-alarm/<id:uuid>", methods=["DELETE"])
+app.add_route(price_alarm_delete, "/price-alarm/<id>", methods=["DELETE"])
+
+ENV = os.getenv("ENV")
 
 async def start_sync_task():
     """
@@ -25,7 +27,7 @@ async def start_sync_task():
     """
 
     max_runs = BoundedSemaphore()
-    max_runs.acquire()
+    await max_runs.acquire()
     await simple_cron()
 
 def check_mongo_is_running() -> None:
@@ -37,7 +39,8 @@ def check_mongo_is_running() -> None:
 try:
     check_mongo_is_running()
     client = motor.motor_asyncio.AsyncIOMotorClient()
-    app.ctx.db_client = client
+    db = client.alarm_db if ENV == "PROD" else client.test_db
+    app.ctx.db = db
 except DBNotRunningException:
     logger.error("DB is not running, exiting...", exc_info=True)
     sys.exit()

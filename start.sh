@@ -3,7 +3,12 @@
 # start the mongo db database
 docker compose -f /home/pi/price_alarm/docker-compose.yml up -d
 # wait some until it starts
-sleep 10
+sleep 5
 # start the server
 source /home/pi/price_alarm/env/bin/activate
-python3 /home/pi/price_alarm/server.py > /home/pi/price_alarm/out.log 2>&1 &
+source /home/pi/price_alarm/.env
+export EMAIL_USERNAME=$EMAIL_USERNAME
+export EMAIL_PASSWORD=$EMAIL_PASSWORD
+export FROM_EMAIL_ADDR=$FROM_EMAIL_ADDR
+export ENV=$ENV
+python3 -u /home/pi/price_alarm/server.py > /home/pi/price_alarm/out.log 2>&1 &

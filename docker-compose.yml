@@ -7,6 +7,6 @@ services:
     container_name: mongodb
     restart: always
     ports:
-      - 127.0.0.1:27017:27017 #only accesible on this host
+      - 27017:27017 #only accesible on this host
     volumes:
       - /home/pi/price_alarm/mongo_volume:/data/db

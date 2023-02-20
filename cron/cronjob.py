@@ -6,4 +6,5 @@ logger = logging.getLogger(__name__)
 # NOTE: can be expanded in the future
 async def simple_cron():
     while True:
-        await asyncio.sleep(300)
+        await asyncio.sleep(5)
+        logger.info("doinmg work")
