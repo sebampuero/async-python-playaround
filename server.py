@@ -7,6 +7,10 @@ from controller.routes_controller import *
 from cron.cronjob import simple_cron
 from exceptions.DBNotRunningException import DBNotRunningException
 
+ENV = os.getenv("ENV")
+SUB_DIRECTORY = os.getenv("SUB_DIRECTORY")
+DOMAIN = os.getenv("DOMAIN")
+
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 handler = RotatingFileHandler("/home/pi/price_alarm/alarm.log")
 handler.setFormatter(formatter)
@@ -15,11 +19,11 @@ logger.addHandler(handler)
 logger.setLevel(logging.DEBUG)
 
 app = Sanic("price_alarm_app")
-app.add_route(main_index, "/")
-app.add_route(price_alarm_create, "/price-alarm", methods=["POST"])
-app.add_route(price_alarm_delete, "/price-alarm/<id>", methods=["DELETE"])
-
-ENV = os.getenv("ENV")
+app.add_route(main_index, f"{SUB_DIRECTORY}/")
+app.add_route(price_alarm_create, f"{SUB_DIRECTORY}/price-alarm", methods=["POST"])
+app.add_route(price_alarm_delete, f"{SUB_DIRECTORY}/price-alarm-delete/<id>", methods=["DELETE", "GET"])
+app.ctx.domain = DOMAIN
+app.ctx.subdirectory = SUB_DIRECTORY
 
 async def start_sync_task():
     """

@@ -16,13 +16,13 @@ class Alarm:
         # call DAO and create alarm, return the ID
         # call email notifier if successful and send email with link + id (we can use app generate url for this)
         # return the id
-        id = await self.dao.save(alarm)
+        id = await self.dao.save(alarm.to_dict())
         logger.debug(f"Successfully created alarm with ID {id}")
         app = Sanic.get_app()
         msg = f"""
-        Created! Here is your link in case you want to delete it and create again: {app.url_for('price_alarm_delete', id=id)}
+        Created! Here is your link in case you want to delete it and create again: {app.ctx.domain}{app.url_for('price_alarm_delete', id=id)}
         """
-        self.email_notifier.send_email(msg, alarm.email)
+        await self.email_notifier.send_email(msg, alarm.email)
         return id
 
     async def delete_alarm(self, id: str):
@@ -33,6 +33,4 @@ class Alarm:
     async def get_alarms(self):
         all_alarms = await self.dao.get_alarms()
         logger.debug(f"Gathering alarms: {all_alarms}")
-        return {
-            'alarms': all_alarms
-        }
+        return all_alarms

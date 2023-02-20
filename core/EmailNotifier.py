@@ -1,5 +1,6 @@
-import smtplib, os
+import aiosmtplib, os
 import logging
+from email.message import EmailMessage
 
 logger = logging.getLogger(__name__)
 
@@ -10,13 +11,22 @@ class EmailNotifier:
         self.email_password = os.getenv("EMAIL_PASSWORD")
         self.from_addr = os.getenv("FROM_EMAIL_ADDR")
 
-    def send_email(self, msg: str, recipient: str) -> None:
+    async def send_email(self, msg: str, recipient: str) -> None:
         logger.debug(f"Sending email to {recipient}")
         try:
-            with smtplib.SMTP_SSL("smtp.strato.de") as server:
-                server.login(self.email, self.email_password)
-                logger.debug("Successfully logged in to SMTP")
-                server.sendmail(self.from_addr, recipient, msg)
-                logger.debug("Successfully sent email")
+           message = EmailMessage()
+           message["From"] = self.from_addr
+           message["To"] = recipient
+           message["Subject"] = "Price alarm notification"
+           message.set_content(msg)
+           await aiosmtplib.send(
+               message,
+               hostname="smtp.strato.de",
+               port=465,
+               username=self.email,
+               password=self.email_password,
+               use_tls=True
+           )
+           logger.debug("Successfully sent email")
         except:
             logger.error("Could not send email notification", exc_info=True)
