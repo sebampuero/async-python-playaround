@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # start the mongo db database
-docker compose -f /home/pi/price_alarm/docker-compose.yml up -d
+docker run --name mongodb -p 27017:27017 -v /home/pi/price_alarm/mongo_volume:/data/db -d mongo:4.4.18
 # wait some until it starts
 sleep 5
 # start the server
