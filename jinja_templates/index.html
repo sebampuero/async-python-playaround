@@ -19,7 +19,7 @@
         <p>Alarms list:</p>
         <ul>
             {% for alarm in alarms %}
-              <li>[ {{ alarm.url }} ]  {{ alarm.price_from }} - {{ alarm.price_to }} {{ alarm.email }}</li>
+              <li>[<a href="{{ alarm.url }}">{{ alarm.url }}</a>]  {{ alarm.price_from }} - {{ alarm.price_to }} {{ alarm.email }}</li>
             {% endfor %}
         </ul>
     </section>

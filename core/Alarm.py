@@ -13,9 +13,6 @@ class Alarm:
         self.dao = DAO()
 
     async def create_alarm(self, alarm: AlarmEntity):
-        # call DAO and create alarm, return the ID
-        # call email notifier if successful and send email with link + id (we can use app generate url for this)
-        # return the id
         id = await self.dao.save(alarm.to_dict())
         logger.debug(f"Successfully created alarm with ID {id}")
         app = Sanic.get_app()

@@ -29,7 +29,9 @@ async def price_alarm_create(request):
     price_to = int(body.get('price_to'))
     new_alarm = AlarmEntity(url, email, price_from, price_to)
     await Alarm().create_alarm(new_alarm)
-    return HTTPResponse(status=201)
+    app =  Sanic.get_app()
+    url = app.url_for("main_index")
+    return redirect(url)
 
 async def price_alarm_delete(request, id: str):
     await Alarm().delete_alarm(id)

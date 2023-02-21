@@ -8,5 +8,5 @@ logger = logging.getLogger(__name__)
 async def simple_cron():
     comp =  Comparator()
     while True:
-        await comp.scan_links()
         await asyncio.sleep(1800)
+        await comp.scan_links()
