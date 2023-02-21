@@ -1,7 +1,13 @@
 #!/bin/bash
 
 # start the mongo db database
-docker run --name mongodb -p 27017:27017 -v /home/pi/price_alarm/mongo_volume:/data/db -d mongo:4.4.18
+if [ -z "$(docker ps -a -f "name=mongodb" -q )" ]; then
+    docker run --name mongodb -p 27017:27017 -v /home/pi/price_alarm/mongo_volume:/data/db -d mongo:4.4.18
+fi
+if [ -n "$(docker ps -a -f "name=mongodb" -f "status=exited" -q )" ]; then
+    docker container start mongodb
+fi
+
 # wait some until it starts
 sleep 5
 # start the server
